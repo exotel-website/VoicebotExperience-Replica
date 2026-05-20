@@ -12,6 +12,12 @@ export class AudioEngine {
     this.sourceNode = null;
     this.analyser = null;
     this._nextPlayTime = 0;
+    this.muted = false;
+  }
+
+  setMuted(muted) {
+    this.muted = muted;
+    this.stream?.getAudioTracks().forEach((t) => { t.enabled = !muted; });
   }
 
   async start() {

@@ -1,6 +1,6 @@
 import { AudioEngine } from './audio-engine.js';
 import { ExotelWSClient } from './ws-client.js';
-import { USE_CASES, BRAND } from './config.js';
+import { USE_CASES } from './config.js';
 
 // ─── Helpers ────────────────────────────────────────────
 function hexToRgb(hex) {
@@ -18,6 +18,7 @@ let currentUseCase = null;
 let timerInterval = null;
 let elapsedSeconds = 0;
 let orbAnimFrame = null;
+let isMuted = false;
 
 // ─── DOM references ─────────────────────────────────────
 const modal = document.getElementById('call-modal');
@@ -26,19 +27,19 @@ const modalSubtitle = document.getElementById('modal-agent-subtitle');
 const modalStatus = document.getElementById('modal-status');
 const modalTimer = document.getElementById('modal-timer');
 const modalEndBtn = document.getElementById('modal-end-btn');
+const modalMuteBtn = document.getElementById('modal-mute-btn');
 const modalClose = document.getElementById('modal-close');
 const orbCanvas = document.getElementById('orb-canvas');
 const orbCtx = orbCanvas?.getContext('2d');
-const cardsContainer = document.getElementById('agent-cards');
+const featuredContainer = document.getElementById('featured-agent');
+const collectionsContainer = document.getElementById('collections-cards');
 
 // ─── Render use case cards ─────────────────────────────
-function renderCards() {
-  if (!cardsContainer) return;
-  cardsContainer.innerHTML = USE_CASES.map((uc) => {
-    const gradient = uc.gradient || `linear-gradient(135deg, ${uc.color}, ${uc.color}cc)`;
-    const glow = `rgba(${hexToRgb(uc.color)}, 0.06)`;
-    return `
-    <div class="agent-card ${uc.comingSoon ? 'coming-soon' : ''}" data-id="${uc.id}" style="--accent: ${uc.color}; --card-gradient: ${gradient}; --accent-glow: ${glow}">
+function cardHTML(uc, extraClass = '') {
+  const gradient = uc.gradient || `linear-gradient(135deg, ${uc.color}, ${uc.color}cc)`;
+  const glow = `rgba(${hexToRgb(uc.color)}, 0.06)`;
+  return `
+    <div class="agent-card ${extraClass} ${uc.comingSoon ? 'coming-soon' : ''}" data-id="${uc.id}" style="--accent: ${uc.color}; --card-gradient: ${gradient}; --accent-glow: ${glow}">
       <div class="card-icon-wrap" style="background: ${uc.color}12; color: ${uc.color}">
         <span class="material-symbols-rounded">${uc.icon}</span>
       </div>
@@ -49,9 +50,21 @@ function renderCards() {
         ${uc.comingSoon ? '<span class="material-symbols-rounded">schedule</span> Coming soon' : '<span class="material-symbols-rounded">call</span> Talk now'}
       </button>
     </div>
-  `}).join('');
+  `;
+}
 
-  cardsContainer.querySelectorAll('.agent-card:not(.coming-soon)').forEach((card) => {
+function renderCards() {
+  const featured = USE_CASES.find((u) => u.featured);
+  const collections = USE_CASES.filter((u) => u.category === 'collections');
+
+  if (featuredContainer && featured) {
+    featuredContainer.innerHTML = cardHTML(featured, 'featured-card');
+  }
+  if (collectionsContainer) {
+    collectionsContainer.innerHTML = collections.map((uc) => cardHTML(uc)).join('');
+  }
+
+  document.querySelectorAll('.agent-card:not(.coming-soon)').forEach((card) => {
     card.addEventListener('click', () => {
       const uc = USE_CASES.find((u) => u.id === card.dataset.id);
       if (uc) startCall(uc);
@@ -169,6 +182,8 @@ async function startCall(useCase) {
   const connected = await wsClient.connect(useCase.endpoint, useCase.sampleRate);
   if (connected) {
     isActive = true;
+    applyMute(false);
+    if (modalMuteBtn) modalMuteBtn.disabled = false;
     setModalStatus('Listening... speak now', 'active');
     startTimer();
     resizeOrb();
@@ -190,8 +205,31 @@ function endCall() {
   audioEngine = null;
   stopTimer();
   cancelAnimationFrame(orbAnimFrame);
+  if (modalMuteBtn) modalMuteBtn.disabled = true;
+  applyMute(false);
   setModalStatus('Call ended', 'ended');
   setTimeout(hideModal, 1200);
+}
+
+// ─── Mute ───────────────────────────────────────────────
+function applyMute(muted) {
+  isMuted = muted;
+  audioEngine?.setMuted(muted);
+  if (modalMuteBtn) {
+    modalMuteBtn.classList.toggle('muted', muted);
+    modalMuteBtn.querySelector('.material-symbols-rounded').textContent = muted ? 'mic_off' : 'mic';
+    modalMuteBtn.title = muted ? 'Unmute microphone' : 'Mute microphone';
+    modalMuteBtn.setAttribute('aria-label', muted ? 'Unmute microphone' : 'Mute microphone');
+    modalMuteBtn.setAttribute('aria-pressed', String(muted));
+  }
+  if (isActive) {
+    setModalStatus(muted ? "Muted. The agent can't hear you" : 'Listening... speak now', muted ? 'connecting' : 'active');
+  }
+}
+
+function toggleMute() {
+  if (!isActive) return;
+  applyMute(!isMuted);
 }
 
 // ─── Modal ──────────────────────────────────────────────
@@ -233,6 +271,7 @@ function stopTimer() { clearInterval(timerInterval); }
 
 // ─── Event listeners ────────────────────────────────────
 modalEndBtn?.addEventListener('click', endCall);
+modalMuteBtn?.addEventListener('click', toggleMute);
 modalClose?.addEventListener('click', endCall);
 modal?.addEventListener('click', (e) => { if (e.target === modal) endCall(); });
 

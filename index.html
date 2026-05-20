@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Experience AI voice agents | Exotel</title>
+  <title>Experience voice AI agents | Exotel</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" rel="stylesheet" />
@@ -100,15 +100,41 @@
       position: relative;
     }
 
+    /* ═══ Featured (hero) agent card ════════════════════ */
+    .featured-wrap {
+      max-width: 520px; margin: 36px auto 0;
+      position: relative;
+    }
+    .featured-card { padding: 28px 28px 24px; border-radius: 16px; }
+    .featured-card .card-icon-wrap {
+      width: 48px; height: 48px; border-radius: 12px; margin-bottom: 16px;
+    }
+    .featured-card .card-icon-wrap .material-symbols-rounded { font-size: 26px; }
+    .featured-card .card-title { font-size: 20px; }
+    .featured-card .card-desc { font-size: 14px; }
+    .featured-card .card-cta { padding: 11px 22px; font-size: 14px; }
+
+    /* ═══ Section heading ═══════════════════════════════ */
+    .section-head { text-align: center; max-width: 620px; margin: 0 auto 28px; }
+    .section-head h2 {
+      font-size: clamp(24px, 3.5vw, 32px); font-weight: 800;
+      color: var(--text-heading); letter-spacing: -0.02em; margin-bottom: 12px;
+    }
+    .section-head p {
+      font-size: 15px; line-height: 1.6; color: var(--text-body);
+    }
+
     /* ═══ Cards grid ════════════════════════════════════ */
     .cards-section {
-      padding: 32px 24px 72px;
+      padding: 56px 24px 72px;
       max-width: 1100px; margin: 0 auto;
     }
     .cards-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
       gap: 16px;
+      max-width: 820px;
+      margin: 0 auto;
     }
 
     .agent-card {
@@ -251,6 +277,22 @@
       font-weight: 500;
     }
 
+    .modal-controls {
+      display: flex; align-items: center; justify-content: center; gap: 14px;
+    }
+
+    .mute-btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 52px; height: 52px; border-radius: 50%;
+      background: var(--exo-neutral-1); color: var(--text-heading);
+      border: none; cursor: pointer; transition: all 0.2s;
+    }
+    .mute-btn:hover:not(:disabled) { background: var(--exo-light-gray); }
+    .mute-btn:disabled { opacity: 0.45; cursor: default; }
+    .mute-btn.muted { background: #EF4444; color: var(--exo-white); }
+    .mute-btn.muted:hover { background: #DC2626; }
+    .mute-btn .material-symbols-rounded { font-size: 22px; }
+
     .end-call-btn {
       display: inline-flex; align-items: center; gap: 8px;
       background: #EF4444; color: var(--exo-white);
@@ -280,6 +322,36 @@
     }
     .footer a:hover { color: var(--exo-blue); }
 
+    /* ═══ Single-viewport (kiosk / 55" TV) layout ═══════ */
+    .stage {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: clamp(16px, 2.6vh, 36px);
+      padding: clamp(20px, 3vh, 44px) 24px;
+    }
+    /* Auto margins center the group when it fits, and collapse to 0 when
+       content is taller than the viewport — so the top never gets clipped. */
+    .stage .hero { padding: 0; width: 100%; margin-top: auto; }
+    .stage .cards-section { padding: 0; width: 100%; max-width: 1100px; margin-bottom: auto; }
+
+    /* Lock to exactly one screen on large displays (1080p TVs, desktops) */
+    @media (min-width: 1000px) and (min-height: 640px) {
+      html, body { height: 100%; overflow: hidden; }
+      .stage { height: 100vh; }
+      .hero-badge { margin-bottom: clamp(10px, 1.6vh, 18px); }
+      .hero h1 { font-size: clamp(30px, 4.4vh, 50px); margin-bottom: clamp(8px, 1.2vh, 16px); }
+      .hero p { font-size: clamp(14px, 1.9vh, 18px); }
+      .featured-wrap { margin-top: clamp(16px, 2.4vh, 30px); }
+      .featured-card { padding: clamp(18px, 2.3vh, 28px) 28px; }
+      .featured-card .card-desc { margin-bottom: clamp(12px, 1.6vh, 16px); }
+      .section-head { margin-bottom: clamp(12px, 1.8vh, 24px); }
+      .section-head h2 { font-size: clamp(22px, 3vh, 30px); margin-bottom: clamp(6px, 1vh, 12px); }
+      .section-head p { font-size: clamp(13px, 1.7vh, 15px); }
+      .card-desc { margin-bottom: clamp(12px, 1.6vh, 16px); }
+    }
+
     /* ═══ Responsive ═══════════════════════════════════ */
     @media (max-width: 480px) {
       .hero { padding: 56px 16px 36px; }
@@ -290,18 +362,27 @@
   </style>
 </head>
 <body>
-  <!-- Hero -->
-  <section class="hero">
-    <div class="hero-badge">
-      <span class="badge-text">AI voice agents</span>
-    </div>
-    <h1>Talk to our <span class="gradient-word">AI agents</span></h1>
-  </section>
+  <!-- Single-viewport stage (fits one screen on a 1080p / 55" TV) -->
+  <main class="stage">
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-badge">
+        <span class="badge-text">Voice AI agents</span>
+      </div>
+      <h1>Talk to a <span class="gradient-word">voice AI agent</span> that does it all</h1>
+      <p>One agent handles support, scheduling, orders and payments. It speaks naturally and resolves in a single call. Pick an agent below and start talking.</p>
+      <div class="featured-wrap" id="featured-agent"></div>
+    </section>
 
-  <!-- Agent cards -->
-  <section class="cards-section">
-    <div class="cards-grid" id="agent-cards"></div>
-  </section>
+    <!-- Collections agents -->
+    <section class="cards-section">
+      <div class="section-head">
+        <h2>Collections, handled by voice AI agents</h2>
+        <p>Payment conversations that recover more. The agent explains options, negotiates, and resolves, in your customer's language.</p>
+      </div>
+      <div class="cards-grid" id="collections-cards"></div>
+    </section>
+  </main>
 
   <!-- Call modal -->
   <div class="call-modal" id="call-modal">
@@ -316,10 +397,15 @@
       </div>
       <div class="modal-status" id="modal-status">Initializing...</div>
       <div class="modal-timer" id="modal-timer">00:00</div>
-      <button class="end-call-btn" id="modal-end-btn">
-        <span class="material-symbols-rounded">call_end</span>
-        End call
-      </button>
+      <div class="modal-controls">
+        <button class="mute-btn" id="modal-mute-btn" type="button" aria-pressed="false" aria-label="Mute microphone" title="Mute microphone" disabled>
+          <span class="material-symbols-rounded">mic</span>
+        </button>
+        <button class="end-call-btn" id="modal-end-btn">
+          <span class="material-symbols-rounded">call_end</span>
+          End call
+        </button>
+      </div>
     </div>
   </div>
 
