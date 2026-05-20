@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Experience AI voice agents | Exotel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" rel="stylesheet" />
+  <style>
+    /* ═══ Exotel brand tokens (light theme per brand guidelines) ═══ */
+    :root {
+      /* Primary and secondary */
+      --exo-violet: #9B42F1;
+      --exo-blue: #0074E8;
+      /* Tertiary */
+      --exo-teal: #00EAC3;
+      --exo-yellow: #F3B843;
+      --exo-pink: #E749A4;
+      /* Neutrals (per brand guideline) */
+      --exo-white: #FFFFFF;
+      --exo-neutral-1: #EFF0F1;
+      --exo-light-gray: #E8EAF3;
+      --exo-neutral-2: #C6C9D8;
+      --exo-mid-gray: #808285;
+      --exo-black: #231F20;
+      /* Brand gradients (45° per guideline, 135deg CSS equivalent) */
+      --grad-ai: linear-gradient(135deg, #9B42F1, #0074E8);
+      --grad-sunset: linear-gradient(135deg, #F3B843, #E749A4);
+      --grad-ocean: linear-gradient(135deg, #0074E8, #00EAC3);
+      /* Light theme surfaces */
+      --page-bg: #FFFFFF;
+      --section-bg: #EFF0F1;
+      --card-bg: #FFFFFF;
+      --text-heading: #231F20;
+      --text-body: #666666;
+      --text-dim: #808285;
+      --border-color: #E8EAF3;
+      --exo-radius: 16px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--page-bg);
+      color: var(--text-body);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ═══ Hero ══════════════════════════════════════════ */
+    .hero {
+      text-align: center;
+      padding: 64px 24px 32px;
+      position: relative;
+      overflow: hidden;
+      background: var(--page-bg);
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(155,66,241,0.06) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 40% at 30% 20%, rgba(0,116,232,0.04) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(155,66,241,0.08);
+      border: 1px solid rgba(155,66,241,0.15);
+      border-radius: 100px; padding: 8px 20px; margin-bottom: 28px;
+      font-size: 13px; font-weight: 600; letter-spacing: 0.3px;
+      position: relative;
+    }
+    .hero-badge span.badge-text {
+      background: var(--grad-ai);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-badge .material-symbols-rounded {
+      font-size: 18px; color: var(--exo-violet);
+    }
+    .hero h1 {
+      font-size: clamp(34px, 5vw, 56px); font-weight: 800;
+      line-height: 1.15; margin-bottom: 20px;
+      letter-spacing: -0.02em;
+      color: var(--text-heading);
+      position: relative;
+    }
+    /* Blue-Violet gradient highlight on key word per brand guideline */
+    .hero h1 .gradient-word {
+      background: var(--grad-ai);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero p {
+      max-width: 580px; margin: 0 auto;
+      font-size: 17px; line-height: 1.7; color: var(--text-body);
+      font-weight: 400;
+      position: relative;
+    }
+
+    /* ═══ Cards grid ════════════════════════════════════ */
+    .cards-section {
+      padding: 32px 24px 72px;
+      max-width: 1100px; margin: 0 auto;
+    }
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .agent-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px 20px 18px;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+    .agent-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: var(--card-gradient, var(--accent));
+      opacity: 0; transition: opacity 0.25s;
+    }
+    .agent-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--exo-neutral-2);
+      box-shadow: 0 8px 20px -8px rgba(35,31,32,0.10), 0 2px 8px -4px rgba(35,31,32,0.06);
+    }
+    .agent-card:hover::before { opacity: 1; }
+    .agent-card.coming-soon { opacity: 0.55; cursor: default; }
+    .agent-card.coming-soon:hover {
+      transform: none; border-color: var(--border-color);
+      box-shadow: none;
+    }
+
+    .card-icon-wrap {
+      width: 40px; height: 40px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 14px;
+      position: relative;
+    }
+    .card-icon-wrap .material-symbols-rounded { font-size: 22px; }
+
+    .card-industry {
+      display: inline-block; font-size: 10px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.8px;
+      color: var(--text-dim); margin-bottom: 6px;
+    }
+    .card-title {
+      font-size: 16px; font-weight: 700; margin-bottom: 6px;
+      color: var(--text-heading);
+      letter-spacing: -0.01em;
+      line-height: 1.3;
+    }
+    .card-desc {
+      font-size: 13px; line-height: 1.55; color: var(--text-body);
+      margin-bottom: 16px; min-height: 0;
+    }
+
+    /* CTA: Blue-Violet gradient per brand guidelines for AI actions */
+    .card-cta {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--grad-ai); color: var(--exo-white);
+      border: none; border-radius: 8px;
+      padding: 8px 16px; font-size: 13px; font-weight: 600;
+      cursor: pointer; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      font-family: inherit;
+      letter-spacing: 0.01em;
+      box-shadow: 0 3px 10px -2px rgba(155,66,241,0.22);
+    }
+    .card-cta:hover:not(:disabled) {
+      filter: brightness(1.08);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px -2px rgba(155,66,241,0.35);
+    }
+    .card-cta:active:not(:disabled) { transform: translateY(0); }
+    .card-cta:disabled {
+      background: var(--exo-neutral-1); color: var(--text-dim);
+      cursor: default; box-shadow: none;
+    }
+    .card-cta .material-symbols-rounded { font-size: 16px; }
+
+    /* ═══ Call modal (dark overlay — keeps focus on the orb) ════ */
+    .call-modal {
+      position: fixed; inset: 0; z-index: 1000;
+      background: rgba(35,31,32,0.6); backdrop-filter: blur(16px);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .call-modal.visible { opacity: 1; pointer-events: all; }
+
+    .modal-content {
+      background: var(--exo-white);
+      border: 1px solid var(--border-color);
+      border-radius: 28px;
+      width: min(440px, 92vw);
+      padding: 44px 36px;
+      text-align: center;
+      position: relative;
+      transform: scale(0.92);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      overflow: hidden;
+    }
+    .modal-content::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: var(--grad-ai);
+    }
+    .call-modal.visible .modal-content { transform: scale(1); }
+
+    .modal-close {
+      position: absolute; top: 18px; right: 18px;
+      background: var(--exo-neutral-1); border: none; color: var(--text-dim);
+      cursor: pointer; font-size: 22px; padding: 6px;
+      border-radius: 8px; transition: all 0.2s;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .modal-close:hover { color: var(--text-heading); background: var(--exo-light-gray); }
+
+    .modal-agent-title {
+      font-size: 22px; font-weight: 700; color: var(--text-heading);
+      margin-bottom: 4px; letter-spacing: -0.01em;
+    }
+    .modal-agent-subtitle { font-size: 14px; color: var(--text-dim); margin-bottom: 28px; }
+
+    .orb-container {
+      width: 200px; height: 200px; margin: 0 auto 28px;
+      position: relative;
+    }
+
+    .modal-status {
+      font-size: 15px; font-weight: 600; margin-bottom: 4px;
+      transition: color 0.2s;
+      letter-spacing: 0.01em;
+    }
+    .modal-status.connecting { color: #D4980F; }
+    .modal-status.connected, .modal-status.active { color: #0B9D7A; }
+    .modal-status.error { color: #DC2626; }
+    .modal-status.ended { color: var(--text-dim); }
+
+    .modal-timer {
+      font-size: 13px; color: var(--text-dim);
+      margin-bottom: 28px; font-variant-numeric: tabular-nums;
+      font-weight: 500;
+    }
+
+    .end-call-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #EF4444; color: var(--exo-white);
+      border: none; border-radius: 100px;
+      padding: 14px 36px; font-size: 15px; font-weight: 600;
+      cursor: pointer; transition: all 0.2s;
+      font-family: inherit;
+      box-shadow: 0 4px 16px -4px rgba(239,68,68,0.3);
+    }
+    .end-call-btn:hover {
+      background: #DC2626; transform: scale(1.04);
+      box-shadow: 0 6px 24px -4px rgba(239,68,68,0.4);
+    }
+    .end-call-btn .material-symbols-rounded { font-size: 20px; }
+
+    /* ═══ Footer ════════════════════════════════════════ */
+    .footer {
+      text-align: center; padding: 36px 24px;
+      border-top: 1px solid var(--border-color);
+      color: var(--text-dim); font-size: 13px;
+      font-weight: 500;
+      background: var(--page-bg);
+    }
+    .footer a {
+      color: var(--exo-violet); text-decoration: none;
+      font-weight: 600; transition: color 0.2s;
+    }
+    .footer a:hover { color: var(--exo-blue); }
+
+    /* ═══ Responsive ═══════════════════════════════════ */
+    @media (max-width: 480px) {
+      .hero { padding: 56px 16px 36px; }
+      .cards-section { padding: 16px 16px 56px; }
+      .cards-grid { grid-template-columns: 1fr; }
+      .modal-content { padding: 32px 20px; border-radius: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-badge">
+      <span class="badge-text">AI voice agents</span>
+    </div>
+    <h1>Talk to our <span class="gradient-word">AI agents</span></h1>
+  </section>
+
+  <!-- Agent cards -->
+  <section class="cards-section">
+    <div class="cards-grid" id="agent-cards"></div>
+  </section>
+
+  <!-- Call modal -->
+  <div class="call-modal" id="call-modal">
+    <div class="modal-content">
+      <button class="modal-close" id="modal-close">
+        <span class="material-symbols-rounded">close</span>
+      </button>
+      <h2 class="modal-agent-title" id="modal-agent-title"></h2>
+      <p class="modal-agent-subtitle" id="modal-agent-subtitle"></p>
+      <div class="orb-container">
+        <canvas id="orb-canvas"></canvas>
+      </div>
+      <div class="modal-status" id="modal-status">Initializing...</div>
+      <div class="modal-timer" id="modal-timer">00:00</div>
+      <button class="end-call-btn" id="modal-end-btn">
+        <span class="material-symbols-rounded">call_end</span>
+        End call
+      </button>
+    </div>
+  </div>
+
+  <script type="module" src="/src/app.js"></script>
+</body>
+</html>
