@@ -328,18 +328,20 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: clamp(16px, 2.6vh, 36px);
-      padding: clamp(20px, 3vh, 44px) 24px;
+      gap: clamp(14px, 2.2vh, 32px);
+      padding: clamp(16px, 2.6vh, 40px) 24px;
     }
     /* Auto margins center the group when it fits, and collapse to 0 when
-       content is taller than the viewport — so the top never gets clipped. */
-    .stage .hero { padding: 0; width: 100%; margin-top: auto; }
-    .stage .cards-section { padding: 0; width: 100%; max-width: 1100px; margin-bottom: auto; }
+       content is taller than the viewport — so the top never gets clipped.
+       flex-shrink: 0 stops the cards from being squashed (which would clip
+       their content) when the content is taller than the viewport. */
+    .stage .hero { padding: 0; width: 100%; margin-top: auto; flex-shrink: 0; }
+    .stage .cards-section { padding: 0; width: 100%; max-width: 1100px; margin-bottom: auto; flex-shrink: 0; }
 
-    /* Lock to exactly one screen on large displays (1080p TVs, desktops) */
-    @media (min-width: 1000px) and (min-height: 640px) {
-      html, body { height: 100%; overflow: hidden; }
-      .stage { height: 100vh; }
+    /* Compact, viewport-scaled sizing on wide screens. The page centers when
+       it fits (TVs, tall desktops) and scrolls cleanly when it doesn't
+       (shorter laptop viewports) — no fixed height, so nothing gets clipped. */
+    @media (min-width: 1000px) {
       .hero-badge { margin-bottom: clamp(10px, 1.6vh, 18px); }
       .hero h1 { font-size: clamp(30px, 4.4vh, 50px); margin-bottom: clamp(8px, 1.2vh, 16px); }
       .hero p { font-size: clamp(14px, 1.9vh, 18px); }
